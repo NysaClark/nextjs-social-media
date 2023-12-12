@@ -364,7 +364,7 @@ body {
 }
 
 .mainPostContent {
-  @apply flex justify-center;
+  @apply flex justify-center flex-col;
 }
 
 .mainPostContent .postImage {

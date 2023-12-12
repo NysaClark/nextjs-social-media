@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 import { useClickOutside } from "@mantine/hooks";
 import { useSession, signOut } from "next-auth/react";
 
-import Avatar from "public/avatar.png";
+import Avatar from "@/public/avatar.png";
 import Image from "next/image";
 
 const Navbar = () => {
@@ -145,9 +145,9 @@ const Navbar = () => {
                 transition={{ duration: 0.48 }}
               >
                 <div className="profileWrapper">
-                  <img src={"/avatar.png"} alt="User Profile Pic" />
+                  <Image src={Avatar} alt="User Profile Pic" />
                   <div className="profileData">
-                    <div className="name">John Doe</div>
+                    <div className="name">{session.data.user.name}</div>
                     <Link className="seeProfile" href={"/profile"}>
                       See Profile
                     </Link>

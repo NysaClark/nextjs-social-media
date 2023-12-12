@@ -4,14 +4,6 @@ const { Schema } = mongoose;
 
 const postSchema = new Schema(
   {
-    title: {
-      type: String,
-      required: true,
-    },
-    desc: {
-      type: String,
-      required: true,
-    },
     content: {
       type: String,
       required: true,
@@ -20,6 +12,8 @@ const postSchema = new Schema(
       type: String,
       required: true,
     },
+    location: { type: String },
+    // picUrl: { type: String },
   },
   { timestamps: true }
 );

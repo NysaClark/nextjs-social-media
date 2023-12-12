@@ -13,9 +13,9 @@ export const GET = async (request) => {
     let posts;
 
     if (username) {
-      posts = await Post.find({ username: username });
+      posts = await Post.find({ username: username }).sort({ createdAt: -1 });
     } else {
-      posts = await Post.find();
+      posts = await Post.find().sort({ createdAt: -1 });
     }
 
     return new NextResponse(JSON.stringify(posts), { status: 200 });

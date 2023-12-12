@@ -3,7 +3,7 @@ import React from 'react'
 import useSWR from "swr"
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import userData from "@/app/UserData";
+// import userData from "@/app/UserData";
 import Post from "@/components/Post";
 import styles from "./page.module.css";
 
@@ -12,6 +12,7 @@ const Profile = () => {
   const router = useRouter();
 
   const fetcher = (...args) => fetch(...args).then((res) => res.json());
+
   const { data, mutate, error, isLoading } = useSWR(
     `/api/posts?username=${session?.data?.user.name}`,
     fetcher
@@ -22,22 +23,20 @@ const Profile = () => {
   }
 
   if (session.status === "unauthenticated") {
-    router?.push("/dashboard/login");
+    router?.push("/profile/login");
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const title = e.target[0].value;
-    const desc = e.target[1].value;
-    const content = e.target[2].value;
+    const content = e.target[0].value;
+    const location = e.target[1].value;
 
     try {
       await fetch("/api/posts", {
         method: "POST",
         body: JSON.stringify({
-          title,
-          desc,
           content,
+          location,
           username: session.data.user.name,
         }),
       });
@@ -52,21 +51,20 @@ const Profile = () => {
     return (
       <div className={styles.container}>
         <div className="mainSection">
-          {isLoading ? "loading" : userData?.map((user, index) => {
-            return <Post key={index} userData={user} />
+          {isLoading ? "loading" : data?.map((post, index) => {
+            return <Post key={index} post={post} />
           })}
         </div>
         <form className={styles.new} onSubmit={handleSubmit}>
           <h1 className={styles.title}>Add New Post</h1>
-          <input type="text" placeholder="Title" className={styles.input} />
-          <input type="text" placeholder="Desc" className={styles.input} />
           <textarea
-            placeholder="Content"
+            placeholder="What's happening?"
             className={styles.textArea}
             cols="30"
             rows="10"
           ></textarea>
-          <button className={styles.button}>Send</button>
+          <input type="text" className={styles.input} placeholder='Where?' />
+          <button className={styles.button}>Post</button>
         </form>
       </div>
     )

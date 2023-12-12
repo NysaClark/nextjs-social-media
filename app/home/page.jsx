@@ -1,24 +1,49 @@
-"use client";
-import React, { useState } from "react";
+"use client"
+import React, {useState, useEffect} from "react";
 import { MdSettings, MdInsertPhoto, MdEmojiEmotions } from "react-icons/md";
 import { BsFillCameraVideoFill } from "react-icons/bs";
 import { useClickOutside } from "@mantine/hooks";
-import userData from "@/app/UserData";
+// import userData from "@/app/UserData";
 import Post from "@/components/Post";
 import Sidebar from "@/components/Sidebar";
+import Avatar from "public/avatar.png"
+
+import Image from "next/image";
 
 const Page = () => {
   const [isFocused, setIsFocused] = useState(false);
   const ref = useClickOutside(() => setIsFocused(false));
 
+  const [data, setData] = useState([]);
+  const [err, setErr] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const getData = async () => {
+      setIsLoading(true);
+      const res = await fetch("/api/posts", {
+        cache: "no-store",
+      });
+
+      if (!res.ok) {
+        setErr(true);
+      }
+
+      const data = await res.json()
+
+      setData(data);
+      setIsLoading(false);
+    };
+    getData()
+  }, []);
 
   return (
     <>
       <div className="mainContainer">
-        <Sidebar/>
+        <Sidebar />
         <div className="mainSection">
-          {userData.map((user, index) => {
-            return <Post key={index} userData={user} />
+          {data.map((post, index) => {
+            return <Post key={index} post={post} />
           })}
         </div>
 
@@ -28,7 +53,7 @@ const Page = () => {
             <div className="requestProfile">
               <div className="details">
                 <div className="profileImage">
-                  <img src={"avatar.png"} alt="" />
+                  <Image src={Avatar} alt="" />
                 </div>
                 <div className="userDetails">
                   <div className="name">Sophie Alexander</div>

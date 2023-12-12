@@ -8,29 +8,47 @@ import {
 import { HiOutlineShare } from "react-icons/hi";
 import { motion } from "framer-motion";
 import { TiDeleteOutline } from "react-icons/ti";
+import Avatar from "public/avatar.png";
+import Placeholder from "public/placeholder.jpg"
+
+import Image from "next/image";
 
 import { useSession } from "next-auth/react";
 
-const Post = ({ userData }) => {
+const Post = ({ post }) => {
   const session = useSession();
   const [open, setOpen] = useState(false);
+
+  const handleDelete = async (id) => {
+    try {
+      await fetch(`/api/posts/${id}`, {
+        method: "DELETE",
+      });
+      mutate();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <>
       <div className="postWrapper">
         <div className="header">
           <div className="left">
-            <img src={`${userData.profilePic}`} alt="" className="profileImg" />
+            {/* <img src={`${post.profilePic}`} alt="" className="profileImg" /> */}
+            <Image src={Avatar} alt="" className="profileImg" />
             <div className="userDetails">
-              <div className="name">{userData.name}</div>
-              <div className="feeling">is feeling happy with @johndoe</div>
+              <div className="name">{post.username}</div>
+              <div className="feeling">{post.location}</div>
             </div>
           </div>
           <div className="right">
-            {session.status === "authenticated" && userData.username === session.data.user.name && (
+            {session.status === "authenticated" && post.username === session.data.user.name && (
               <div
                 className="delete"
+                style={{ cursor: "pointer"}}
                 onClick={() => {
-                  handleDelete(userData._id);
+                  handleDelete(post._id);
                 }}
               >
                 <TiDeleteOutline color="red" />
@@ -40,12 +58,14 @@ const Post = ({ userData }) => {
         </div>
         <div className="mainPostContent">
           <motion.img
-            src={userData.postImg}
+            // src={post.postImg}
+            src={Placeholder.src}
             alt=""
             className="postImage"
             onClick={() => setOpen(!open)}
             animate={{ scale: open ? 2 : 1 }}
           />
+          <p>{post.content}</p>
         </div>
         <div className="postFooter">
           <div className="postActions">
