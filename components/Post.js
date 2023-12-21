@@ -15,27 +15,15 @@ import Image from "next/image";
 
 import { useSession } from "next-auth/react";
 
-const Post = ({ post }) => {
+const Post = ({ post, handleDelete }) => {
   const session = useSession();
   const [open, setOpen] = useState(false);
-
-  const handleDelete = async (id) => {
-    try {
-      await fetch(`/api/posts/${id}`, {
-        method: "DELETE",
-      });
-      mutate();
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <>
       <div className="postWrapper">
         <div className="header">
           <div className="left">
-            {/* <img src={`${post.profilePic}`} alt="" className="profileImg" /> */}
             <Image src={Avatar} alt="" className="profileImg" />
             <div className="userDetails">
               <div className="name">{post.username}</div>
@@ -58,8 +46,7 @@ const Post = ({ post }) => {
         </div>
         <div className="mainPostContent">
           <motion.img
-            // src={post.postImg}
-            src={Placeholder.src}
+            src={post.image || Placeholder.src}
             alt=""
             className="postImage"
             onClick={() => setOpen(!open)}
